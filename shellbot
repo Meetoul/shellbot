@@ -21,12 +21,7 @@ EXIT_CODE="$?"
 END_TIME=$(date +%s)
 
 TIME_TOOK=$(expr "${END_TIME}" - "${START_TIME}")
-
-echo ${TIME_TOOK}
-
 TIME_TOOK_STR=$(date -u -d @"${TIME_TOOK}" +"%H:%M:%S")
-
-echo ${TIME_TOOK_STR}
 
 MESSAGE_TEXT=$(printf "*${HOSTNAME}*:\n\`${COMMAND}\`\nexited with code ${EXIT_CODE}, took ${TIME_TOOK_STR}")
 
