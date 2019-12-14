@@ -1,0 +1,34 @@
+#!/bin/bash
+
+if [ -z "${TELEGRAM_BOT_TOKEN}" ]; then
+    echo "TELEGRAM_BOT_TOKEN is not set"
+    exit 1
+fi
+
+if [ -z "${TELEGRAM_CHAT_ID}" ]; then
+    echo "TELEGRAM_CHAT_ID is not set"
+    exit 1
+fi
+
+COMMAND="$@"
+
+START_TIME=$(date +%s)
+
+eval "${COMMAND}"
+
+EXIT_CODE="$?"
+
+END_TIME=$(date +%s)
+
+TIME_TOOK=$(expr "${END_TIME}" - "${START_TIME}")
+
+echo ${TIME_TOOK}
+
+TIME_TOOK_STR=$(date -u -d @"${TIME_TOOK}" +"%H:%M:%S")
+
+echo ${TIME_TOOK_STR}
+
+MESSAGE_TEXT=$(printf "*${HOSTNAME}*:\n\`${COMMAND}\`\nexited with code ${EXIT_CODE}, took ${TIME_TOOK_STR}")
+
+curl -s --data-urlencode "text=${MESSAGE_TEXT}" \
+    "https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage?chat_id=${TELEGRAM_CHAT_ID}&parse_mode=markdown" > /dev/null
